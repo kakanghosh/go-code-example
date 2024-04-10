@@ -15,8 +15,8 @@ func main() {
 	// arrayExample()
 	// sliceExample()
 	// sortingExample()
-	queueExample()
-	// stackExample()
+	// queueExample()
+	stackExample()
 	// mapExample()
 	// setExample()
 	// heapExmple()
@@ -176,7 +176,15 @@ func mapExample() {
 }
 
 func stackExample() {
-	panic("unimplemented")
+	nums := []int{6, 7, 8, 9, 4}
+	stack := list.New()
+	for _, value := range nums {
+		stack.PushFront(value)
+	}
+
+	for e := stack.Front(); e != nil; e = e.Next() {
+		fmt.Println("Stack top:", e.Value.(int))
+	}
 }
 
 func queueExample() {
