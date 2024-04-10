@@ -10,8 +10,8 @@ import (
 
 func main() {
 	// dataTypeExample()
-	arrayExample()
-	// sliceExample()
+	// arrayExample()
+	sliceExample()
 	// sortingExample()
 	// queueExample()
 	// stackExample()
@@ -24,7 +24,32 @@ func main() {
 }
 
 func sliceExample() {
+	nums := [8]int{1, 2, 3, 4, 5, 6, 7, 8}
+	fmt.Println("Array:", nums, "len:", len(nums), "cap:", cap(nums))
+	slice := nums[:5]
+	fmt.Println("slice:", slice, "len:", len(slice), "cap:", cap(slice))
+	nums[3] = 12
+	fmt.Println("updated common index of array and slice:", nums, slice)
 
+	var nilSlice []int
+	if nilSlice == nil {
+		fmt.Println("nilSlice is nil slice")
+	}
+	fmt.Println("Zero value of nil slice:", nilSlice, len(nilSlice), cap(nilSlice))
+	nilSlice = append(nilSlice, 4)
+	fmt.Println("Append value in nil slice:", nilSlice, len(nilSlice), cap(nilSlice))
+	if nilSlice == nil {
+		fmt.Println("nilSlice is nil slice")
+	} else {
+		fmt.Println("nilSlice is not nil slice anymore after adding value")
+	}
+
+	nilSlice2 := make([]int, 0)
+	fmt.Println(nilSlice2, len(nilSlice2), cap(nilSlice2))
+
+	if nilSlice2 != nil {
+		fmt.Println("nilSlice2 is empty slice")
+	}
 }
 
 func arrayExample() {
