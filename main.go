@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -11,13 +12,13 @@ import (
 func main() {
 	// dataTypeExample()
 	// arrayExample()
-	sliceExample()
-	// sortingExample()
+	// sliceExample()
+	sortingExample()
 	// queueExample()
 	// stackExample()
 	// mapExample()
 	// setExample()
-	// priorityQueueExmple()
+	// heapExmple()
 	// customTypeExample()
 	// interfaceExample()
 	// concurrencyExample()
@@ -155,10 +156,20 @@ func concurrencyExample() {
 }
 
 func sortingExample() {
-	panic("unimplemented")
+	nums := []int{5, 7, 4, 3, 2, 1, 9}
+	sort.Slice(nums, func(i, j int) bool { return nums[i] < nums[j] })
+	fmt.Println(nums)
+	target := 6
+	idx := sort.Search(len(nums), func(i int) bool { return nums[i] >= target })
+	fmt.Println(idx)
+
+	words := []string{"luminous", "wipro", "edifier", "samsung"}
+	fmt.Println(words)
+	sort.Slice(words, func(i, j int) bool { return words[i] < words[j] })
+	fmt.Println(words)
 }
 
-func priorityQueueExmple() {
+func heapExmple() {
 	panic("unimplemented")
 }
 
