@@ -1,6 +1,7 @@
 package main
 
 import (
+	"container/list"
 	"fmt"
 	"sort"
 	"strconv"
@@ -13,8 +14,8 @@ func main() {
 	// dataTypeExample()
 	// arrayExample()
 	// sliceExample()
-	sortingExample()
-	// queueExample()
+	// sortingExample()
+	queueExample()
 	// stackExample()
 	// mapExample()
 	// setExample()
@@ -179,5 +180,19 @@ func stackExample() {
 }
 
 func queueExample() {
-	panic("unimplemented")
+	nums := []int{4, 6, 3, 8}
+	q := list.New()
+	for _, num := range nums {
+		q.PushBack(num)
+	}
+	fmt.Println("Queue length:", q.Len())
+	for e := q.Front(); e != nil; e = e.Next() {
+		fmt.Println(e.Value.(int))
+	}
+	q.Remove(q.Front())
+	q.Remove(q.Back())
+	fmt.Println("Queue length after removing:", q.Len())
+	for e := q.Front(); e != nil; e = e.Next() {
+		fmt.Println(e.Value.(int))
+	}
 }
