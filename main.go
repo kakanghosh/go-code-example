@@ -24,7 +24,7 @@ func main() {
 }
 
 func sliceExample() {
-	panic("unimplemented")
+
 }
 
 func arrayExample() {
@@ -34,26 +34,28 @@ func arrayExample() {
 
 	fmt.Println("Delete first item:", nums[1:])
 	fmt.Println("Delete last item:", nums[0:n-1])
-	fmt.Println("iterate over array traditional")
 
-	numbers := [1_000_000_0]int{}
-	timeTakenUsingTraditionalLoop(numbers)
-	timeTakenUsingForEachLoop(numbers)
+	timeTakenUsingTraditionalLoop()
+	timeTakenUsingForEachLoop()
 }
 
-func timeTakenUsingForEachLoop(numbers [1_000_000_0]int) {
+func timeTakenUsingForEachLoop() {
+	fmt.Println("iterate over foreach")
+	numbers := [1_000_000_000]int64{}
 	now := time.Now().UnixMilli()
-	sum := 0
+	sum := int64(0)
 	for _, value := range numbers {
 		sum += value
 	}
 	fmt.Println("it took", time.Now().UnixMilli()-now)
 }
 
-func timeTakenUsingTraditionalLoop(numbers [1_000_000_0]int) {
+func timeTakenUsingTraditionalLoop() {
+	fmt.Println("iterate over array traditional")
+	numbers := [1_000_000_000]int64{}
 	numbersLen := len(numbers)
 	now := time.Now().UnixMilli()
-	sum := 0
+	sum := int64(0)
 	for i := 0; i < numbersLen; i++ {
 		sum += numbers[i]
 	}
