@@ -33,9 +33,6 @@ func sliceExample() {
 	fmt.Println("updated common index of array and slice:", nums, slice)
 
 	var nilSlice []int
-	if nilSlice == nil {
-		fmt.Println("nilSlice is nil slice")
-	}
 	fmt.Println("Zero value of nil slice:", nilSlice, len(nilSlice), cap(nilSlice))
 	nilSlice = append(nilSlice, 4)
 	fmt.Println("Append value in nil slice:", nilSlice, len(nilSlice), cap(nilSlice))
@@ -46,11 +43,7 @@ func sliceExample() {
 	}
 
 	nilSlice2 := make([]int, 0)
-	fmt.Println(nilSlice2, len(nilSlice2), cap(nilSlice2))
-
-	if nilSlice2 != nil {
-		fmt.Println("nilSlice2 is empty slice")
-	}
+	fmt.Println("Empty slice", nilSlice2, len(nilSlice2), cap(nilSlice2))
 }
 
 func arrayExample() {
