@@ -16,9 +16,8 @@ func main() {
 	// sliceExample()
 	// sortingExample()
 	// queueExample()
-	stackExample()
-	// mapExample()
-	// setExample()
+	// stackExample()
+	mapExample()
 	// heapExmple()
 	// customTypeExample()
 	// interfaceExample()
@@ -167,12 +166,23 @@ func heapExmple() {
 	panic("unimplemented")
 }
 
-func setExample() {
-	panic("unimplemented")
-}
-
 func mapExample() {
-	panic("unimplemented")
+	nums := []int{7, 1, 3, 4, 5, 6, 7, 3, 2, 9, 5, 3, 7, 8, 45, 32, 55}
+	mp := make(map[int]int)
+	for _, v := range nums {
+		mp[v]++
+	}
+	fmt.Println("Frequency map:", mp)
+	delete(mp, 1)
+	fmt.Println("Frequency map:", mp)
+
+	set := make(map[int]struct{})
+	_, found := set[1]
+	fmt.Println("Exist key:", found)
+	set[1] = struct{}{}
+	_, found = set[1]
+	fmt.Println("Exist key:", found)
+	fmt.Println("Set:", set)
 }
 
 func stackExample() {
