@@ -4,11 +4,14 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 	"unicode/utf8"
 )
 
 func main() {
-	dataTypeExample()
+	// dataTypeExample()
+	arrayExample()
+	// sliceExample()
 	// sortingExample()
 	// queueExample()
 	// stackExample()
@@ -18,6 +21,43 @@ func main() {
 	// customTypeExample()
 	// interfaceExample()
 	// concurrencyExample()
+}
+
+func sliceExample() {
+	panic("unimplemented")
+}
+
+func arrayExample() {
+	nums := [7]int{1, 2, 3, 4, 5, 6, 7}
+	fmt.Println(nums)
+	n := len(nums)
+
+	fmt.Println("Delete first item:", nums[1:])
+	fmt.Println("Delete last item:", nums[0:n-1])
+	fmt.Println("iterate over array traditional")
+
+	numbers := [1_000_000_0]int{}
+	timeTakenUsingTraditionalLoop(numbers)
+	timeTakenUsingForEachLoop(numbers)
+}
+
+func timeTakenUsingForEachLoop(numbers [1_000_000_0]int) {
+	now := time.Now().UnixMilli()
+	sum := 0
+	for _, value := range numbers {
+		sum += value
+	}
+	fmt.Println("it took", time.Now().UnixMilli()-now)
+}
+
+func timeTakenUsingTraditionalLoop(numbers [1_000_000_0]int) {
+	numbersLen := len(numbers)
+	now := time.Now().UnixMilli()
+	sum := 0
+	for i := 0; i < numbersLen; i++ {
+		sum += numbers[i]
+	}
+	fmt.Println("it took", time.Now().UnixMilli()-now)
 }
 
 func customTypeExample() {
@@ -81,9 +121,6 @@ func dataTypeExample() {
 	fmt.Println("Trying to parse invalid numeric string:", num, err)
 	numString := strconv.Itoa(567)
 	fmt.Println("Number to String conv:", numString)
-	// array
-
-	// slice
 }
 
 func concurrencyExample() {
