@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 	"unicode/utf8"
+	"unsafe"
 )
 
 func main() {
@@ -20,9 +21,36 @@ func main() {
 	// stackExample()
 	// mapExample()
 	// heapExmple()
-	interfaceExample()
+	// interfaceExample()
 	// stringconvExample()
+	pointerEaxmple()
 	// concurrencyExample()
+}
+
+func pointerEaxmple() {
+	var num int8
+	num = 80
+	var numPointer *int8 = &num
+	fmt.Println("Address", numPointer)
+
+	nums := []int8{1, 2, 3, 4, 5}
+	l := len(nums)
+	fmt.Println("Sequential array address")
+	for i := 0; i < l; i++ {
+		fmt.Println(&nums[i])
+	}
+	fmt.Println("Size of array item:", unsafe.Sizeof(nums[0]), "byte")
+
+	fmt.Println("Change variable value using reference")
+	number := 10
+	var ptr *int = &number
+	fmt.Println(number)
+	*ptr = 12
+	fmt.Println(number)
+
+	fmt.Println(nums)
+	nums[0], nums[1] = nums[1], nums[0]
+	fmt.Println(nums)
 }
 
 func stringconvExample() {
@@ -275,11 +303,11 @@ func (h IntHeap) Len() int           { return len(h) }
 func (h IntHeap) Less(i, j int) bool { return h[i] < h[j] }
 func (h IntHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
 
-func (h *IntHeap) Push(x interface{}) {
+func (h *IntHeap) Push(x any) {
 	*h = append(*h, x.(int))
 }
 
-func (h *IntHeap) Pop() interface{} {
+func (h *IntHeap) Pop() any {
 	n := len(*h)
 	x := (*h)[n-1]
 	*h = (*h)[0 : n-1]
