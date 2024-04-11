@@ -19,10 +19,26 @@ func main() {
 	// queueExample()
 	// stackExample()
 	// mapExample()
-	heapExmple()
-	// customTypeExample()
-	// interfaceExample()
+	// heapExmple()
+	interfaceExample()
+	// stringconvExample()
 	// concurrencyExample()
+}
+
+func stringconvExample() {
+	binaryString := strconv.FormatInt(15, 2)
+	greyString := make([]rune, 0)
+	for _, ch := range binaryString {
+		if len(greyString) == 0 {
+			greyString = append(greyString, ch)
+		} else if greyString[len(greyString)-1] == ch {
+			greyString = append(greyString, '0')
+		} else {
+			greyString = append(greyString, '1')
+		}
+	}
+	res, _ := strconv.ParseInt(string(greyString), 10, 64)
+	fmt.Println(binaryString, res)
 }
 
 func sliceExample() {
@@ -82,12 +98,102 @@ func timeTakenUsingTraditionalLoop() {
 	fmt.Println("it took", time.Now().UnixMilli()-now)
 }
 
-func customTypeExample() {
-	panic("unimplemented")
+type MusicPlayer interface {
+	VolumeUp()
+	VolumeDown()
+	Play()
+	Pause()
+	Next()
+	Prev()
+	PlayingNow() Song
+	AddSong(name, singer string)
+	ShowPlayList()
+}
+
+type Song struct {
+	name   string
+	singer string
+}
+
+type GoogleMusic struct {
+	songs       []Song
+	volumeLevel int
+	isPlaying   bool
+	currentSong int
+}
+
+func (rec *GoogleMusic) AddSong(name string, singer string) {
+	song := Song{name, singer}
+	rec.songs = append(rec.songs, song)
+}
+
+func (rec *GoogleMusic) VolumeUp() {
+	if rec.volumeLevel < 100 {
+		rec.volumeLevel++
+	} else {
+		fmt.Println("Full")
+	}
+}
+
+func (rec GoogleMusic) VolumeDown() {
+	if rec.volumeLevel > 0 {
+		rec.volumeLevel--
+	} else {
+		fmt.Println("Muted")
+	}
+}
+
+func (rec GoogleMusic) ShowVolume() int {
+	return rec.volumeLevel
+}
+
+func (rec *GoogleMusic) Play() {
+	rec.isPlaying = true
+}
+
+func (rec *GoogleMusic) Pause() {
+	rec.isPlaying = false
+}
+
+func (rec *GoogleMusic) Next() {
+	rec.currentSong = (rec.currentSong + 1) % len(rec.songs)
+	rec.Play()
+}
+
+func (rec *GoogleMusic) Prev() {
+	if rec.currentSong-1 >= 0 {
+		rec.currentSong--
+		rec.Play()
+	}
+}
+
+func (rec GoogleMusic) PlayingNow() Song {
+	return rec.songs[rec.currentSong]
+}
+
+func (rec GoogleMusic) ShowPlayList() {
+	fmt.Println("Showing playlist")
+	for _, song := range rec.songs {
+		fmt.Println(song.name, "-", song.singer)
+	}
 }
 
 func interfaceExample() {
-	panic("unimplemented")
+	var musicPlayer MusicPlayer = &GoogleMusic{}
+	musicPlayer.AddSong("O Mahi", "Arijit Sing")
+	musicPlayer.AddSong("Bandeya Re Bandeya", "Arijit Sing")
+	musicPlayer.AddSong("Hamari Adhuri kahani", "Arijit Sing")
+	musicPlayer.ShowPlayList()
+	musicPlayer.VolumeDown()
+	musicPlayer.VolumeUp()
+	musicPlayer.VolumeUp()
+	musicPlayer.VolumeUp()
+	fmt.Println("Volume:", musicPlayer.(*GoogleMusic).ShowVolume())
+	fmt.Println("Playing now:", musicPlayer.PlayingNow())
+	musicPlayer.Next()
+	fmt.Println("Playing now:", musicPlayer.PlayingNow())
+	musicPlayer.Next()
+	fmt.Println("Playing now:", musicPlayer.PlayingNow())
 }
 
 func dataTypeExample() {
