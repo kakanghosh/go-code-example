@@ -1,6 +1,7 @@
 package main
 
 import (
+	"container/heap"
 	"container/list"
 	"fmt"
 	"sort"
@@ -17,8 +18,8 @@ func main() {
 	// sortingExample()
 	// queueExample()
 	// stackExample()
-	mapExample()
-	// heapExmple()
+	// mapExample()
+	heapExmple()
 	// customTypeExample()
 	// interfaceExample()
 	// concurrencyExample()
@@ -162,8 +163,30 @@ func sortingExample() {
 	fmt.Println(words)
 }
 
+type IntHeap []int
+
+func (h IntHeap) Len() int           { return len(h) }
+func (h IntHeap) Less(i, j int) bool { return h[i] < h[j] }
+func (h IntHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+
+func (h *IntHeap) Push(x interface{}) {
+	*h = append(*h, x.(int))
+}
+
+func (h *IntHeap) Pop() interface{} {
+	n := len(*h)
+	x := (*h)[n-1]
+	*h = (*h)[0 : n-1]
+	return x
+}
+
 func heapExmple() {
-	panic("unimplemented")
+	minHeap := &IntHeap{8, 2, 5, 9}
+	heap.Init(minHeap)
+	fmt.Println("Heap length:", minHeap.Len())
+	for minHeap.Len() > 0 {
+		fmt.Println(heap.Pop(minHeap))
+	}
 }
 
 func mapExample() {
