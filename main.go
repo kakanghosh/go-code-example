@@ -36,6 +36,11 @@ func redisExample() {
 	client := redis_demo.GetRedisClient("localhost:6379", "")
 	defer client.Close()
 	ctx := context.Background()
+
+	if _, err := client.Ping(ctx).Result(); err != nil {
+		panic(err)
+	}
+
 	for try := 0; try < 10; try++ {
 		locked, _ := client.SetNX(ctx, "money_transfer_count_lock", 1, 10*time.Second).Result()
 		if locked {
