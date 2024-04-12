@@ -3,6 +3,7 @@ package main
 import (
 	"container/heap"
 	"container/list"
+	"context"
 	"fmt"
 	"sort"
 	"strconv"
@@ -10,6 +11,8 @@ import (
 	"time"
 	"unicode/utf8"
 	"unsafe"
+
+	"github.com/kakanghosh/go-code/redis_demo"
 )
 
 func main() {
@@ -24,8 +27,30 @@ func main() {
 	// interfaceExample()
 	// stringconvExample()
 	// pointerEaxmple()
-	structExample()
+	// structExample()
+	redisExample()
 	// concurrencyExample()
+}
+
+func redisExample() {
+	client := redis_demo.GetRedisClient("localhost:6379", "")
+	defer client.Close()
+	ctx := context.Background()
+	for try := 0; try < 10; try++ {
+		locked, _ := client.SetNX(ctx, "money_transfer_count_lock", 1, 10*time.Second).Result()
+		if locked {
+			defer client.Del(ctx, "money_transfer_count_lock")
+			fmt.Println("Lock acquired successfully")
+			currentCount, _ := client.Get(ctx, "money_transfer_count").Int()
+			time.Sleep(5 * time.Second)
+			money_transfer_count, err := client.Set(ctx, "money_transfer_count", currentCount+1, 5*time.Minute).Result()
+			fmt.Println("money_transfer_count:", money_transfer_count, err)
+			break
+		} else {
+			fmt.Println("Failed to get lock")
+			time.Sleep(3 * time.Second)
+		}
+	}
 }
 
 func structExample() {
