@@ -23,8 +23,27 @@ func main() {
 	// heapExmple()
 	// interfaceExample()
 	// stringconvExample()
-	pointerEaxmple()
+	// pointerEaxmple()
+	structExample()
 	// concurrencyExample()
+}
+
+func structExample() {
+	slice := make([]int, 5)
+	slice[1] = 6
+	fmt.Println(slice)
+	appendToSlice(&slice)
+	fmt.Println(slice)
+	swap(slice, 0, 1)
+	fmt.Println(slice)
+}
+
+func appendToSlice(s *[]int) {
+	*s = append(*s, 4)
+}
+
+func swap(s []int, i, j int) {
+	s[i], s[j] = s[j], s[i]
 }
 
 func pointerEaxmple() {
@@ -280,7 +299,7 @@ func dataTypeExample() {
 }
 
 func concurrencyExample() {
-	panic("unimplemented")
+
 }
 
 func sortingExample() {
