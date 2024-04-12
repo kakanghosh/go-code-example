@@ -8,11 +8,13 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 	"unicode/utf8"
 	"unsafe"
 
 	"github.com/kakanghosh/go-code/redis_demo"
+	"github.com/redis/go-redis/v9"
 )
 
 func main() {
@@ -28,19 +30,14 @@ func main() {
 	// stringconvExample()
 	// pointerEaxmple()
 	// structExample()
-	redisExample()
-	// concurrencyExample()
+	// redisExample()
+	concurrencyExample()
 }
 
 func redisExample() {
 	client := redis_demo.GetRedisClient("localhost:6379", "")
 	defer client.Close()
 	ctx := context.Background()
-
-	if _, err := client.Ping(ctx).Result(); err != nil {
-		panic(err)
-	}
-
 	for try := 0; try < 10; try++ {
 		locked, _ := client.SetNX(ctx, "money_transfer_count_lock", 1, 10*time.Second).Result()
 		if locked {
@@ -329,7 +326,81 @@ func dataTypeExample() {
 }
 
 func concurrencyExample() {
+	client := redis_demo.GetRedisClient("localhost:6379", "")
+	wg := &sync.WaitGroup{}
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		transerMoney("A-000-000-001", "A-000-000-002", 1000, client)
+	}()
+	go func() {
+		defer wg.Done()
+		transerMoney("A-000-000-002", "A-000-000-001", 2000, client)
+	}()
+	wg.Wait()
+}
 
+func transerMoney(sender, reciever string, money int, client *redis.Client) {
+	createAccountIfNotExist(sender, client)
+	createAccountIfNotExist(reciever, client)
+	ctx := context.Background()
+	lockKey := fmt.Sprintf("trasnfer-money-%s", sender)
+	if acquireLock(ctx, lockKey, client) {
+		defer client.Del(ctx, lockKey)
+		senderBalance, err1 := getAccountBalance(ctx, sender, client)
+		recBalance, err2 := getAccountBalance(ctx, reciever, client)
+		if err1 != nil {
+			panic(err1)
+		}
+		if err2 != nil {
+			panic(err2)
+		}
+		if int(senderBalance) < money {
+			fmt.Println("Insufficient balace:", sender, senderBalance)
+			return
+		}
+		addAmountToAccountBalance(ctx, sender, int(senderBalance)-money, client)
+		addAmountToAccountBalance(ctx, reciever, int(recBalance)+money, client)
+	} else {
+		fmt.Println("Failed to acquire lock")
+	}
+}
+
+func addAmountToAccountBalance(ctx context.Context, acc string, money int, client *redis.Client) {
+	_, err := client.HMSet(ctx, acc, "amount", money).Result()
+	fmt.Println(acc, "updated", err)
+}
+
+func getAccountBalance(ctx context.Context, account string, client *redis.Client) (int64, error) {
+	values, _ := client.HMGet(ctx, account, "amount").Result()
+	amount, err := strconv.ParseInt(values[0].(string), 10, 64)
+	if err != nil {
+		return -1, err
+	}
+	return amount, nil
+}
+
+func createAccountIfNotExist(acc string, client *redis.Client) {
+	ctx := context.Background()
+	lockKey := fmt.Sprintf("%s-create", acc)
+	flag, _ := client.SetNX(ctx, lockKey, 1, 5*time.Second).Result()
+	if flag {
+		defer client.Del(ctx, lockKey)
+		if exists, _ := client.Exists(ctx, acc).Result(); exists == 1 {
+			// fmt.Println(acc, "exists")
+		} else {
+			_, err := client.HMSet(ctx, acc, "amount", 500).Result()
+			if err != nil {
+				panic(err)
+			}
+			// fmt.Println(acc, "created", err)
+		}
+	}
+}
+
+func acquireLock(ctx context.Context, lockKey string, client *redis.Client) bool {
+	flag, _ := client.SetNX(ctx, lockKey, 1, 5*time.Second).Result()
+	return flag
 }
 
 func sortingExample() {
